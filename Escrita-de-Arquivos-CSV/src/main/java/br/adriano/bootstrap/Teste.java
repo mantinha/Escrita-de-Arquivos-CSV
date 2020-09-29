@@ -4,7 +4,6 @@ import br.adriano.service.EscritaCSV;
 
 /**
  * Teste de uso da classe EscritaCSV
- * Os parametros sao ilimitados
  * 
  * @author adriano
  *
@@ -13,12 +12,12 @@ public class Teste {
 
 	public static void main(String[] args) {		
 		
-		EscritaCSV escritor = new EscritaCSV("nome","idade","tel");
-		escritor.prepararDados("Adriano","27","44791725");
-		escritor.prepararDados("Eliana","22","43751729");
-		escritor.prepararDados("Bianca","25","44551943");		
-		escritor.print();
-		escritor.escreverDados();
+		EscritaCSV escreve = new EscritaCSV();
+		escreve.toList("Adriano","Cenoura","adriandesigner@hotmail.com");
+		escreve.toList("Eliana","Beterraba","eliana@teste.com");
+		escreve.toList("Bianca","Abacate","bianca123@test.com");		
+		escreve.print();
+		escreve.write();
 
 	}
 

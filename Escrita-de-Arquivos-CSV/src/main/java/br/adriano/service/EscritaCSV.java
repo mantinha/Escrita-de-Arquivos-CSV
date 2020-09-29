@@ -3,6 +3,12 @@ package br.adriano.service;
 import java.util.List;
 
 import com.opencsv.CSVWriter;
+import com.opencsv.bean.StatefulBeanToCsv;
+import com.opencsv.bean.StatefulBeanToCsvBuilder;
+import com.opencsv.exceptions.CsvDataTypeMismatchException;
+import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
+
+import br.adriano.pojo.Pessoa;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,10 +18,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 
 /**
- * A classe EscritaCSV faz guarda e escreve dados em um arquivo .CSV
+ * A classe EscritaCSV guarda e escreve dados em um arquivo .CSV
  * O nomeDoArquivo pode ser modificado conforme necessidade
- * @param cabecalho sao ilimitados
- * @param campos sao ilimitados
+ * O POJO pode ser modificado conforme necessidade
  * 
  * @author adriano
  *
@@ -23,16 +28,13 @@ import java.util.ArrayList;
 public class EscritaCSV {
 	
 	private final String nomeDoArquivo = "teste.csv";
-	private List<String[]> cabecalho;
-    private List<String[]> linhas;
+    private List<Pessoa> lista;
+    
     private Writer writer;
     private CSVWriter csvWriter;
     
-    public EscritaCSV(String... cabecalho) {  	
-    	this.cabecalho = new ArrayList<>();    	
-		this.cabecalho.add(cabecalho);
-    	
-    	linhas = new ArrayList<>();
+    public EscritaCSV() {    	
+    	lista = new ArrayList<>();
     	
     	try {
 			writer = Files.newBufferedWriter(Paths.get("src"
@@ -49,16 +51,37 @@ public class EscritaCSV {
     	
     }
     
-    public void prepararDados(String... campos) {
-    	linhas.add(campos);
+    /**
+     * Atribui lista baseado nos atributos do POJO
+     * @param nome
+     * @param sobrenome
+     * @param email
+     */
+    public void toList(String nome, String sobrenome, String email) {
+    	lista.add(new Pessoa(nome, sobrenome, email));
     }
     
-    public void escreverDados() {
+    public void print() {
+    	System.out.println(lista);
+    }
+    
+    public void write() {
 		if(writer != null) {			
 			csvWriter = new CSVWriter(writer);
 			
-			csvWriter.writeAll(cabecalho);
-	        csvWriter.writeAll(linhas);	        
+			StatefulBeanToCsv<Pessoa> beanToCsv = new StatefulBeanToCsvBuilder<Pessoa>(writer)
+					.withSeparator(CSVWriter.DEFAULT_SEPARATOR)
+					.build();
+			
+			try {
+				beanToCsv.write(lista.iterator());
+			} catch (CsvDataTypeMismatchException exc) {
+				System.out.println("ERRO! " + exc.getMessage());
+				exc.printStackTrace();
+			} catch (CsvRequiredFieldEmptyException exc) {
+				System.out.println("ERRO! " + exc.getMessage());
+				exc.printStackTrace();				
+			}
 	        
 	        System.out.println(nomeDoArquivo + " criado!");
 	        liberaBuffer();
@@ -73,27 +96,6 @@ public class EscritaCSV {
 			System.err.println("ERRO! buffer parado em memoria. " + exc.getMessage());
 			exc.printStackTrace();
 		}        
-    }
-    
-    public void print() {    	
-    	for(int i = 0; i < linhas.size(); i++) {
-    		
-    		for(int j = 0; j < linhas.get(i).length; j++) {
-    			if(j > 0 && i < 1)
-					System.out.print(", ");
-    			if(i < 1)
-	    			System.out.print(cabecalho.get(i)[j]);    			
-    		}
-    		
-			for(int j = 0; j < linhas.get(i).length; j++) {
-				
-				if(j > 0)
-					System.out.print(", ");
-				System.out.print(linhas.get(i)[j]);
-			}
-			
-			System.out.println();
-		}
     }
     
 }
