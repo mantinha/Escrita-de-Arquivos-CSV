@@ -1,4 +1,4 @@
-"ANOME","BSOBRENOME","CEMAIL"
-"Adriano","Cenoura","adriandesigner@hotmail.com"
-"Eliana","Beterraba","eliana@teste.com"
-"Bianca","Abacate","bianca123@test.com"
+"EMAIL","NOME","SOBRENOME"
+"adriandesigner@hotmail.com","Adriano","Cenoura"
+"eliana@teste.com","Eliana","Beterraba"
+"bianca123@test.com","Bianca","Abacate"
